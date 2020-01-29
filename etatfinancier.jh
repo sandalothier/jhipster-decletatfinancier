@@ -1,0 +1,146 @@
+
+enum EtatFinancierCertifier {
+    NON_ASSUJETI, NON, OUI_AVEC_RESERVE, OUI_SANS_RESERVE
+}
+enum EtatFinancierApprobation {
+    NON_ASSUJETI, OUI, NON
+}
+/**
+ * ConversionUnite entity.
+ * @author sanda
+ *     relation
+ */
+entity EtatFinancier {
+    exerciceClos Date
+    dateEnvoi Instant
+    systeme String
+    arretCompte Date
+    arretExoPrecedent Date
+    dureeExoEnMois Integer
+    certification EtatFinancierCertifier
+    approbation EtatFinancierApprobation
+	methodeGeneral String
+    methodeSpecifique String
+    derogation String
+    methodePresentation String
+    derogationPresentation String
+    circonstanceExceptionnelle String
+    amortDeuxACinqAns String
+    nonDistributionDividende String
+    precisionFraisEtablissement String
+    precisionChargeARepartir String
+    methodeCalculBeneficePartiel String
+    infoOperationCommune String
+}
+/** 
+ * ConversionUnite entity.
+ * @author sanda
+ * 
+ */
+entity ReevaluationEffectuee {
+    elementReevalue String
+	nature String
+    dateReevaluation Date
+    traitementFiscal String
+    montantIncorporeCapital Double
+}
+/**
+ * IntituleEtatFinancier entity.
+ * @author sanda
+ *   
+ */
+entity IntituleEtatFinancier {
+    intitule String
+    type Integer
+}
+
+
+/**
+ * ExploitantIndividuel entity.
+ * @author sanda
+ * Relation
+ *     ManyToOne avec EtatFinancier
+ *        ManyToOne avec IntituleEtatFinancier
+ */
+entity Actionnaire {
+    nom String
+    prenoms String
+    montantCapital Double
+    proportionCapital Double
+}
+/**
+ * ConseilAdministration entity.
+ * @author sanda
+ * Relation
+ *     ManyToOne avec EtatFinancier
+ */
+entity ConseilAdministration {
+    nom String
+    prenoms String
+    quailite String
+}
+/**
+ * Dirigeant entity.
+ * @author sanda
+ * Relation
+ *     ManyToOne avec EtatFinancier
+ */
+entity Dirigeant {
+    nom String
+    prenoms String
+    quailite String
+}
+/**
+ * Filiale entity.
+ * @author sanda
+ * Relation
+ *     ManyToOne avec EtatFinancier
+ */
+entity Filiale {
+    nationalite String
+    montantCapital Double
+    proportionCapital Double
+}
+/**
+ * BilanSmt entity.
+ * @author sanda
+ * Relation
+ *     ManyToOne avec EtatFinancier
+ *        OneToOne avec IntituleEtatFinancier
+ */
+entity VariationAvoirSmt {
+    montant Double
+}
+relationship OneToMany {
+    EtatFinancier to ReevaluationEffectuee
+}
+relationship OneToMany {
+    EtatFinancier to Actionnaire
+}
+relationship OneToMany {
+    EtatFinancier to ConseilAdministration
+}
+relationship OneToMany {
+    EtatFinancier to Dirigeant
+}
+relationship OneToMany {
+    EtatFinancier to Filiale
+}
+relationship OneToMany {
+    EtatFinancier to VariationAvoirSmt
+}
+relationship OneToMany {
+    EtatFinancier to Filiale
+}
+relationship OneToMany {
+    EnteteDeclaration to EtatFinancier
+}
+// Set pagination options
+paginate EtatFinancier, Actionnaire, Dirigeant, Filiale with infinite-scroll
+paginate ReevaluationEffectuee, ConseilAdministration, VariationAvoirSmt with pagination
+// Use Data Transfert Objects (DTO)
+dto EtatFinancier, Actionnaire, Dirigeant, Filiale, ReevaluationEffectuee, ConseilAdministration, VariationAvoirSmt with mapstruct
+// Set service options to all except few
+service all with serviceImpl
+// Set an angular suffix
+// angularSuffix * with mySuffix
